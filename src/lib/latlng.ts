@@ -1,4 +1,4 @@
-import { DMS, LatOrLng } from './types';
+import { Direction, DMS, LatOrLng } from './types';
 
 const DEGREE_PRECISION_FACTOR = 1e7;
 const MINUTE_PRECISION_FACTOR = 1e6;
@@ -84,4 +84,84 @@ export function dms2dd(dms: DMS): number {
   return directionMultiplier * Math.round((
     degrees + minutes / 60 + seconds / 3600
   ) * DEGREE_PRECISION_FACTOR) / DEGREE_PRECISION_FACTOR;
+}
+
+/**
+ * Create a string representation of a coordinate
+ *
+ *  * ### Example (es module)
+ * ```js
+ * import { format } from 'latlng-conv'
+ * console.log(format({degrees: 10, minutes: 7, seconds: 24.24}))
+ * // => 10° 7' 24.24"
+ * console.log(format({degrees: 10, minutes: 7, seconds: 24.24, direction: 'N'}))
+ * // => 10° 7' 24.24" N
+ * ```
+ *
+ * ### Example (commonjs)
+ * ```js
+ * var format = require('latlng-conv').format;
+ * console.log(format({degrees: 10, minutes: 7, seconds: 24.24}))
+ * // => 10° 7' 24.24"
+ * console.log(format({degrees: 10, minutes: 7, seconds: 24.24, direction: 'N'}))
+ * // => 10° 7' 24.24" N
+ * ```
+ *
+ * @param dms A coordinate in degrees, minutes and seconds
+ * @returns A string representation of dms coordinate
+ */
+export function format(dms: DMS): string {
+  const { degrees, minutes, seconds, direction } = dms;
+  return direction ? `${degrees}° ${minutes}' ${seconds}" ${direction}` : `${degrees}° ${minutes}' ${seconds}"`;
+}
+
+/**
+ * Parse a coordinate string and extract degrees, minutes, seconds and direction
+ * from it.
+ *
+ * The coordinate string must be formatted as, for example, 10° 7' 24.24" N,
+ * otherwise an error will be thrown.
+ *
+ *  * ### Example (es module)
+ * ```js
+ * import { parse } from 'latlng-conv'
+ * console.log(parse('10° 7\' 24.24"'))
+ * // => {degrees: 10, minutes: 7, seconds: 24.24}
+ * console.log(parse('10° 0\' 0"'))
+ * // => {degrees: 10, minutes: 0, seconds: 0}
+ * console.log(parse('10° 7\' 24.24" N'))
+ * // => {degrees: 10, minutes: 7, seconds: 24.24, direction: 'N'}
+ * ```
+ *
+ * ### Example (commonjs)
+ * ```js
+ * var parse = require('latlng-conv').parse;
+ * console.log(parse('10° 7\' 24.24"')
+ * // => {degrees: 10, minutes: 7, seconds: 24.24}
+ * console.log(parse('10° 0\' 0"'))
+ * // => {degrees: 10, minutes: 0, seconds: 0}
+ * console.log(parse('10° 7\' 24.24" N'))
+ * // => {degrees: 10, minutes: 7, seconds: 24.24, direction: 'N'}
+ * ```
+ *
+ * @param coordinate A coordinate string formatted as, for example, 10° 7' 24.24" N
+ * @returns Extracted degrees, minutes, seconds and direction from coordinate string
+ */
+export function parse(coordinate: string): DMS {
+  const pattern = /^([0-1]?[0-9]?[0-9])°\s([0-5]?[0-9])'\s([0-5]?[0-9](?:.\d+)?)"\s?(N|S|E|W)?$/;
+  const results = pattern.exec(coordinate);
+  if (!results) {
+    throw new Error('Invalid coordinate string');
+  }
+
+  const [degrees, minutes, seconds, direction] = results.slice(1, 5);
+  const dms = {
+    degrees: parseInt(degrees, 10),
+    minutes: parseInt(minutes, 10),
+    seconds: parseFloat(seconds),
+  };
+  return direction ? {
+    ...dms,
+    direction: direction as Direction,
+  } : dms;
 }
