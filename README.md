@@ -1,3 +1,5 @@
 # latlng-conv
 
-Latitude/longitude coordinates conversions
+Latitude and longitude coordinates converter.
+
+[API Docs](https://mingfeng.github.io/latlng-conv/)
