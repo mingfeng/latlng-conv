@@ -7,7 +7,7 @@
   "module": "build/module/index.js",
   "repository": "https://github.com/mingfeng/latlng-conv",
   "license": "MIT",
-  "keywords": [],
+  "keywords": ["latlng", "converter", "wgs84", "coordinates"],
   "scripts": {
     "info": "npm-scripts-info",
     "build": "run-s clean && run-p build:*",
