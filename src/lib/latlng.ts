@@ -35,19 +35,27 @@ const SECOND_PRECISION_FACTOR = 1e4;
  */
 export function dd2dms(value: number, latOrLng?: LatOrLng): DMS {
   const absValue = Math.abs(value);
-  const degrees = Math.round(absValue * DEGREE_PRECISION_FACTOR) / DEGREE_PRECISION_FACTOR;
-  const minutes = Math.round(degrees % 1 * 60 * MINUTE_PRECISION_FACTOR) / MINUTE_PRECISION_FACTOR;
-  const seconds = Math.round(minutes % 1 * 60 * SECOND_PRECISION_FACTOR) / SECOND_PRECISION_FACTOR;
+  const degrees =
+    Math.round(absValue * DEGREE_PRECISION_FACTOR) / DEGREE_PRECISION_FACTOR;
+  const minutes =
+    Math.round((degrees % 1) * 60 * MINUTE_PRECISION_FACTOR) /
+    MINUTE_PRECISION_FACTOR;
+  const seconds =
+    Math.round((minutes % 1) * 60 * SECOND_PRECISION_FACTOR) /
+    SECOND_PRECISION_FACTOR;
   const dms = {
     degrees: Math.floor(degrees),
     minutes: Math.floor(minutes),
-    seconds,
+    seconds
   };
 
-  return latOrLng ? {
-    ...dms,
-    direction: (latOrLng === 'lat') ? (value > 0 ? 'N' : 'S') : (value > 0 ? 'E' : 'W'),
-  } : dms;
+  return latOrLng
+    ? {
+        ...dms,
+        direction:
+          latOrLng === 'lat' ? (value > 0 ? 'N' : 'S') : value > 0 ? 'E' : 'W'
+      }
+    : dms;
 }
 
 /**
@@ -81,9 +89,13 @@ export function dd2dms(value: number, latOrLng?: LatOrLng): DMS {
 export function dms2dd(dms: DMS): number {
   const { degrees, minutes, seconds, direction } = dms;
   const directionMultiplier = direction === 'W' || direction === 'S' ? -1 : 1;
-  return directionMultiplier * Math.round((
-    degrees + minutes / 60 + seconds / 3600
-  ) * DEGREE_PRECISION_FACTOR) / DEGREE_PRECISION_FACTOR;
+  return (
+    (directionMultiplier *
+      Math.round(
+        (degrees + minutes / 60 + seconds / 3600) * DEGREE_PRECISION_FACTOR
+      )) /
+    DEGREE_PRECISION_FACTOR
+  );
 }
 
 /**
@@ -112,7 +124,9 @@ export function dms2dd(dms: DMS): number {
  */
 export function format(dms: DMS): string {
   const { degrees, minutes, seconds, direction } = dms;
-  return direction ? `${degrees}° ${minutes}' ${seconds}" ${direction}` : `${degrees}° ${minutes}' ${seconds}"`;
+  return direction
+    ? `${degrees}° ${minutes}' ${seconds}" ${direction}`
+    : `${degrees}° ${minutes}' ${seconds}"`;
 }
 
 /**
@@ -158,10 +172,12 @@ export function parse(coordinate: string): DMS {
   const dms = {
     degrees: parseInt(degrees, 10),
     minutes: parseInt(minutes, 10),
-    seconds: parseFloat(seconds),
+    seconds: parseFloat(seconds)
   };
-  return direction ? {
-    ...dms,
-    direction: direction as Direction,
-  } : dms;
+  return direction
+    ? {
+        ...dms,
+        direction: direction as Direction
+      }
+    : dms;
 }
