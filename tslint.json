@@ -29,5 +29,7 @@
       { "ignore-prefix": ["console.", "process.exit"] }
     ],
     /* end tslint-immutable rules */
+
+    "object-literal-sort-keys": false
   }
 }
