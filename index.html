@@ -67,6 +67,41 @@
 				<h1 id="latlng-conv">latlng-conv</h1>
 				<p>Latitude and longitude coordinates converter.</p>
 				<p><a href="https://mingfeng.github.io/latlng-conv/">API Docs</a></p>
+				<h2 id="examples">Examples</h2>
+				<h3 id="dd2dms">dd2dms</h3>
+				<p>Convert a coordinate in decimal degrees (DD) to degrees, minutes and seconds (DMS).</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { dd2dms } <span class="hljs-keyword">from</span> <span class="hljs-string">'latlng-conv'</span>
+<span class="hljs-built_in">console</span>.log(dd2dms(<span class="hljs-number">10.1234</span>))
+<span class="hljs-comment">// =&gt; {degrees: 10, minutes: 7, seconds: 24.24}</span>
+<span class="hljs-built_in">console</span>.log(dd2dms(<span class="hljs-number">10.1234</span>, <span class="hljs-string">'lat'</span>))
+<span class="hljs-comment">// =&gt; {degrees: 10, minutes: 7, seconds: 24.24, direction: 'N'}</span>
+<span class="hljs-built_in">console</span>.log(dd2dms(<span class="hljs-number">-10.1234</span>, <span class="hljs-string">'lng'</span>))
+<span class="hljs-comment">// =&gt; {degrees: 10, minutes: 7, seconds: 24.24, direction: 'W'}</span></code></pre>
+				<h3 id="dms2dd">dms2dd</h3>
+				<p>Convert a coordinate in degrees, minutes and seconds (DMS) to decimal degrees (DD).</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { dms2dd } <span class="hljs-keyword">from</span> <span class="hljs-string">'latlng-conv'</span>
+<span class="hljs-built_in">console</span>.log(dms2dd({<span class="hljs-attr">degrees</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">minutes</span>: <span class="hljs-number">7</span>, <span class="hljs-attr">seconds</span>: <span class="hljs-number">24.24</span>}))
+<span class="hljs-comment">// =&gt; 10.1234</span>
+<span class="hljs-built_in">console</span>.log(dms2dd({<span class="hljs-attr">degrees</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">minutes</span>: <span class="hljs-number">7</span>, <span class="hljs-attr">seconds</span>: <span class="hljs-number">24.24</span>, <span class="hljs-attr">direction</span>: <span class="hljs-string">'N'</span>}))
+<span class="hljs-comment">// =&gt; 10.1234</span>
+<span class="hljs-built_in">console</span>.log(dms2dd({<span class="hljs-attr">degrees</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">minutes</span>: <span class="hljs-number">7</span>, <span class="hljs-attr">seconds</span>: <span class="hljs-number">24.24</span>, <span class="hljs-attr">direction</span>: <span class="hljs-string">'S'</span>}))
+<span class="hljs-comment">// =&gt; -10.1234</span></code></pre>
+				<h3 id="format">format</h3>
+				<p>Create a string representation of a coordinate</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { format } <span class="hljs-keyword">from</span> <span class="hljs-string">'latlng-conv'</span>
+<span class="hljs-built_in">console</span>.log(format({<span class="hljs-attr">degrees</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">minutes</span>: <span class="hljs-number">7</span>, <span class="hljs-attr">seconds</span>: <span class="hljs-number">24.24</span>}))
+<span class="hljs-comment">// =&gt; 10° 7' 24.24"</span>
+<span class="hljs-built_in">console</span>.log(format({<span class="hljs-attr">degrees</span>: <span class="hljs-number">10</span>, <span class="hljs-attr">minutes</span>: <span class="hljs-number">7</span>, <span class="hljs-attr">seconds</span>: <span class="hljs-number">24.24</span>, <span class="hljs-attr">direction</span>: <span class="hljs-string">'N'</span>}))
+<span class="hljs-comment">// =&gt; 10° 7' 24.24" N</span></code></pre>
+				<h3 id="parse">parse</h3>
+				<p>Parse a coordinate string and extract degrees, minutes, seconds and direction from it.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { parse } <span class="hljs-keyword">from</span> <span class="hljs-string">'latlng-conv'</span>
+<span class="hljs-built_in">console</span>.log(parse(<span class="hljs-string">'10° 7\' 24.24"'</span>))
+<span class="hljs-comment">// =&gt; {degrees: 10, minutes: 7, seconds: 24.24}</span>
+<span class="hljs-built_in">console</span>.log(parse(<span class="hljs-string">'10° 0\' 0"'</span>))
+<span class="hljs-comment">// =&gt; {degrees: 10, minutes: 0, seconds: 0}</span>
+<span class="hljs-built_in">console</span>.log(parse(<span class="hljs-string">'10° 7\' 24.24" N'</span>))
+<span class="hljs-comment">// =&gt; {degrees: 10, minutes: 7, seconds: 24.24, direction: 'N'}</span></code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
