@@ -1,6 +1,6 @@
 {
   "name": "latlng-conv",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Latitude and longitude coordinates converter",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
