@@ -1,8 +1,96 @@
-import { Direction, DMS, LatOrLng } from './types';
+import { DDM, Direction, DMS, LatOrLng } from './types';
 
 const DEGREE_PRECISION_FACTOR = 1e7;
 const MINUTE_PRECISION_FACTOR = 1e6;
 const SECOND_PRECISION_FACTOR = 1e4;
+
+/**
+ * Convert a coordinate in decimal degrees (DD) to degrees and decimal minutes (DDM).
+ *
+ * ### Example (es module)
+ * ```js
+ * import { dd2ddm } from 'latlng-conv'
+ * console.log(dd2ddm(10.1234))
+ * // => {degrees: 10, minutes: 7.404}
+ * console.log(dd2ddm(10.1234, 'lat'))
+ * // => {degrees: 10, minutes: 7.404, direction: "N"}
+ * console.log(dd2ddm(-10.1234, 'lng'))
+ * // => {degrees: 10, minutes: 7.404, direction: "W"}
+ * ```
+ *
+ * ### Example (commonjs)
+ * ```js
+ * var dd2ddm = require('latlng-conv').dd2ddm;
+ * console.log(dd2ddm(10.1234))
+ * // => {degrees: 10, minutes: 7, seconds: 24.24}
+ * console.log(dd2ddm(10.1234, 'lat'))
+ * // => {degrees: 10, minutes: 7, seconds: 24.24, direction: 'N'}
+ * console.log(dd2ddm(-10.1234, 'lng'))
+ * // => {degrees: 10, minutes: 7, seconds: 24.24, direction: 'W'}
+ * ```
+ *
+ * @param value A decimal degree coordinate
+ * @param latOrLng The type of the coordinate, 'lat' or 'lng'
+ * @returns A coordinate in degrees and decimal minutes
+ */
+export function dd2ddm(value: number, latOrLng?: LatOrLng): DDM {
+  const absValue = Math.abs(value);
+  const degrees =
+    Math.round(absValue * DEGREE_PRECISION_FACTOR) / DEGREE_PRECISION_FACTOR;
+  const minutes =
+    Math.round((degrees % 1) * 60 * MINUTE_PRECISION_FACTOR) /
+    MINUTE_PRECISION_FACTOR;
+  const ddm = {
+    degrees: Math.floor(degrees),
+    minutes
+  };
+
+  return latOrLng
+    ? {
+        ...ddm,
+        direction:
+          latOrLng === 'lat' ? (value > 0 ? 'N' : 'S') : value > 0 ? 'E' : 'W'
+      }
+    : ddm;
+}
+
+/**
+ * Convert a coordinate in degrees and decimal minutes (DDM) to decimal degrees (DD).
+ *
+ * ### Example (es module)
+ * ```js
+ * import { ddm2dd } from 'latlng-conv'
+ * console.log(ddm2dd({degrees: 10, minutes: 7.404}))
+ * // => 10.1234
+ * console.log(ddm2dd({degrees: 10, minutes: 7.404, direction: 'N'}))
+ * // => 10.1234
+ * console.log(ddm2dd({degrees: 10, minutes: 7.404, direction: 'S'}))
+ * // => -10.1234
+ * ```
+ *
+ * ### Example (commonjs)
+ * ```js
+ * var ddm2dd = require('latlng-conv').ddm2dd;
+ * console.log(ddm2dd({degrees: 10, minutes: 7.404}))
+ * // => 10.1234
+ * console.log(ddm2dd({degrees: 10, minutes: 7.404, direction: 'N'}))
+ * // => 10.1234
+ * console.log(ddm2dd({degrees: 10, minutes: 7.404, direction: 'S'}))
+ * // => -10.1234
+ * ```
+ *
+ * @param ddm A coordinate in degrees, minutes and seconds
+ * @returns A coordinate in decimal degrees
+ */
+export function ddm2dd(ddm: DDM): number {
+  const { degrees, minutes, direction } = ddm;
+  const directionMultiplier = direction === 'W' || direction === 'S' ? -1 : 1;
+  return (
+    (directionMultiplier *
+      Math.round((degrees + minutes / 60) * DEGREE_PRECISION_FACTOR)) /
+    DEGREE_PRECISION_FACTOR
+  );
+}
 
 /**
  * Convert a coordinate in decimal degrees (DD) to degrees, minutes and seconds (DMS).
