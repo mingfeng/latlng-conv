@@ -7,6 +7,12 @@ export interface DMS {
   readonly direction?: Direction;
 }
 
+export interface DDM {
+  readonly degrees: number;
+  readonly minutes: number;
+  readonly direction?: Direction;
+}
+
 export type DecimalCoordinates = [number, number];
 
 export type DMSCoordinates = [string, string];
